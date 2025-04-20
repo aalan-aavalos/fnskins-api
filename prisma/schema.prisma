@@ -18,6 +18,7 @@ model User {
   id           String         @id @default(uuid())
   email        String         @unique
   name         String?
+  password     String         // Campo para almacenar la contraseña hasheada
   createdAt    DateTime       @default(now())
   pushToken    String?        // Para notificaciones push (en el futuro)
   donations    Float?         // Cuánto ha donado el usuario

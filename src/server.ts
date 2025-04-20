@@ -14,7 +14,7 @@ class Server {
     constructor() {
         this.app = App.getApp();
         this.port = process.env.PORT || 5000;
-        // SkinCron.start();
+        SkinCron.start();
     }
 
     public start() {
