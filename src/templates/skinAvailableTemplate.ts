@@ -1,22 +1,28 @@
-import { Entry } from '../types/shop.types';
-import { TrackedItemWithUser } from '../types/trackedItems.type';
+import { Entry } from "../types/shop.types";
+import { TrackedItemWithUser } from "../types/trackedItems.type";
 
-export function skinAvailableTemplate(skinData: Entry, itemUserData: TrackedItemWithUser): string {
-    if (!skinData) throw new Error("Error: la data de la Skin no está disponible");
-    if (!skinData.brItems) throw new Error("Error: la data de brItems no está disponible");
-    if (!skinData.newDisplayAsset) throw new Error("Error: los assets no están disponibles");
+export function skinAvailableTemplate(
+  skinData: Entry,
+  itemUserData: TrackedItemWithUser
+): string {
+  if (!skinData)
+    throw new Error("Error: la data de la Skin no está disponible");
+  if (!skinData.brItems)
+    throw new Error("Error: la data de brItems no está disponible");
+  if (!skinData.newDisplayAsset)
+    throw new Error("Error: los assets no están disponibles");
 
-    const colors = skinData.colors;
-    const gradient = colors
-        ? `linear-gradient(to bottom${colors.color1 ? `, #${colors.color1}` : ''
-        }${colors.color2 ? `, #${colors.color2}` : ''}${colors.color3 ? `, #${colors.color3}` : ''
-        })`
-        : 'none';
+  const colors = skinData.colors;
+  const gradient = colors
+    ? `linear-gradient(to bottom${colors.color1 ? `, #${colors.color1}` : ""}${
+        colors.color2 ? `, #${colors.color2}` : ""
+      }${colors.color3 ? `, #${colors.color3}` : ""})`
+    : "none";
 
-    skinData.finalPrice
-    return `
+  skinData.finalPrice;
+  return `
     <div style="font-family: Arial, sans-serif; text-align: center;">
-      <h2>Hola ${itemUserData.user.name ?? 'Jugador'} 👋</h2>
+      <h2>Hola ${itemUserData.user.name ?? "Jugador"} 👋</h2>
       <h1>${skinData.brItems[0].name}</h1>
       <p style="font-size: 18px;">
         ¡Ya está disponible en la tienda!
@@ -36,7 +42,9 @@ export function skinAvailableTemplate(skinData: Entry, itemUserData: TrackedItem
         align-items: center;
         justify-content: center;
       ">
-        <img src="${skinData.brItems[0].images.featured}" alt="Imagen de ${skinData.brItems[0].name}"
+        <img src="${skinData.brItems[0].images.featured}" alt="Imagen de ${
+    skinData.brItems[0].name
+  }"
           style="max-width: 100%; max-height: 100%; border-radius: 10px; background-image: ${gradient};" />
       </div>
     </div>

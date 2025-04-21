@@ -1,5 +1,5 @@
-import express from 'express';
-import { TrackedItemController } from '../controllers/TrackedItemController';
+import express from "express";
+import { TrackedItemController } from "../controllers/TrackedItemController";
 
 class TrackedItemRoutes {
   private router: express.Router;
@@ -11,12 +11,12 @@ class TrackedItemRoutes {
   }
 
   private routes() {
-    this.router.post('/', this.controller.create);
-    this.router.get('/', this.controller.findAll);
-    this.router.get('/:id', this.controller.findOne);
-    this.router.get('/byUserID/:userId', this.controller.findOneByUserId);
-    this.router.put('/:id', this.controller.update);
-    this.router.delete('/:id', this.controller.delete);
+    this.router.post("/", this.controller.create);
+    this.router.get("/", this.controller.findAll);
+    this.router.get("/:id", this.controller.findOne);
+    this.router.get("/byUserID/:userId", this.controller.findOneByUserId);
+    this.router.put("/:id", this.controller.update);
+    this.router.delete("/:id", this.controller.delete);
   }
 
   public getRouter(): express.Router {

@@ -1,16 +1,16 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 class DB {
-    private static prisma: PrismaClient;
+  private static prisma: PrismaClient;
 
-    private constructor() { }
+  private constructor() {}
 
-    public static getPrismaClient(): PrismaClient {
-        if (!DB.prisma) {
-            DB.prisma = new PrismaClient();
-        }
-        return DB.prisma;
+  public static getPrismaClient(): PrismaClient {
+    if (!DB.prisma) {
+      DB.prisma = new PrismaClient();
     }
+    return DB.prisma;
+  }
 }
 
 export default DB;
