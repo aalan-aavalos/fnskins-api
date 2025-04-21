@@ -1,28 +1,41 @@
+// src/cron/SkinCron.ts
 import cron from 'node-cron';
-import { NodemailerSender } from '../utils/NodemailerSender';
+import { ShopService } from '../services/ShopService';
+import { TrackedItemService } from '../services/TrackedItemService';
+import { NotificationService } from '../services/NotificationService';
+import { Entry } from '../types/shop.types';
 
 class SkinCron {
-    public static start() {
-        cron.schedule('* * * * *', async () => { // Cron ejecutado cada minuto
-            console.log('Cron ejecutado cada minuto');
-            const destiny = "avalosalan789@gmail.com"
-            // Llamada para enviar un correo de prueba
+    private static trackedItemService = new TrackedItemService()
+    public static start(): void {
+        // '0 18 * * *'
+        cron.schedule('0 18 * * *', async () => {
+            console.log('[CRON] Ejecutando verificación diaria de skins...');
+
             try {
-                /* await NodemailerSender.sendMail(
-                    destiny,
-                    'Correo de prueba',
-                    '<h1>¡Hola desde Nodemailer!</h1>',
-                    'Hola desde Nodemailer'
-                ); */
-                /* await EmailSender.sendEmail(
-                    'Prueba de cron', // Asunto
-                    '<strong>Este es un correo de prueba enviado cada minuto.</strong>', // Contenido HTML
-                    'Este es un correo de prueba enviado cada minuto.', // Contenido de texto
-                    process.env.RECIPIENT_EMAIL as string // Correo del destinatario desde las variables de entorno
-                ); */
+                // Consulta la API de la tienda de Fortnite y retorna un arreglo donde estan todas las skins de la tienda
+                const shopSkins = await ShopService.getSkinsFromStore();
+                // Crea un arreglo donde solo guarda el id de las skins
+                const skinIds = shopSkins.outfits.map((entry: Entry) => entry.brItems && entry?.brItems[0].id) as string[];
+            
+                // Consulta la coincidencia de skinId en la base de datos y retorna las que coinciden
+                const matchedTrackedItems = await this.trackedItemService.getTrackedItemsBySkinIds(skinIds)
+            
+                if (matchedTrackedItems.length === 0) {
+                    console.log('[CRON] No hay coincidencias con skins trakeadas.');
+                    return;
+                }
+
+                // Prepara la notificación y la manda por correo electronico
+                const notifications = NotificationService.prepareNotifications(matchedTrackedItems, shopSkins);
+                await NotificationService.sendNotifications(notifications);
+
+                console.log(`[CRON] Notificaciones enviadas a ${notifications.length} usuarios.`);
             } catch (error) {
-                console.log('Error al enviar correo:', error);
+                console.error('[CRON] Error al ejecutar cron:', error);
             }
+        }, {
+            timezone: 'America/Mexico_City' // GMT-6
         });
     }
 }

@@ -1,5 +1,5 @@
-import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
-
+/* import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
+Codigo comentado porque por el momento no se utilizara esta bibloteca pero no quiero perder la funcion
 class EmailSender {
     private static mailerSend: MailerSend;
 
@@ -44,3 +44,13 @@ class EmailSender {
 }
 
 export { EmailSender };
+ */
+
+/* uso
+import { NodemailerSender } from '../utils/NodemailerSender';
+await EmailSender.sendEmail(
+                    'Prueba de cron', // Asunto
+                    '<strong>Este es un correo de prueba enviado cada minuto.</strong>', // Contenido HTML
+                    'Este es un correo de prueba enviado cada minuto.', // Contenido de texto
+                    process.env.RECIPIENT_EMAIL as string // Correo del destinatario desde las variables de entorno
+                ); */

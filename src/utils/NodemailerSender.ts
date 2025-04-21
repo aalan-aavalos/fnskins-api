@@ -27,8 +27,6 @@ class NodemailerSender {
                     'Importance': 'high'
                 },
             });
-
-            console.log(`Correo enviado a ${to}`);
         } catch (error) {
             console.error('Error al enviar el correo:', error);
             throw error;
@@ -36,4 +34,4 @@ class NodemailerSender {
     }
 }
 
-export {NodemailerSender}
+export { NodemailerSender }
