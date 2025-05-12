@@ -9,6 +9,7 @@ class TrackedItemController {
       const trackedItem = await this.trackedItemService.createTrackedItem(
         req.body
       );
+
       res.status(201).json(trackedItem);
     } catch (error) {
       res.status(500).json({ error: "Error creating trackedItem" });

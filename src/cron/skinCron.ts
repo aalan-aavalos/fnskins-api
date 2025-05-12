@@ -10,7 +10,7 @@ class SkinCron {
   public static start(): void {
     // '0 18 * * *'
     cron.schedule(
-      "0 18 * * *",
+      "0 18 * * *",  
       async () => {
         console.log("[CRON] Ejecutando verificación diaria de skins...");
 

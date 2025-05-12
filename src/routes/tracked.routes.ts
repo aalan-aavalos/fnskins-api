@@ -1,5 +1,5 @@
 import express from "express";
-import { TrackedItemController } from "../controllers/TrackedItemController";
+import { TrackedItemController } from "../controllers/trackedItem.controller";
 
 class TrackedItemRoutes {
   private router: express.Router;

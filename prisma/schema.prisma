@@ -24,6 +24,9 @@ model User {
   donations    Float?         // Cuánto ha donado el usuario
   isDonor      Boolean        @default(false)
   trackedItems TrackedItem[]
+  verificationCode String?  // Código de verificación enviado por correo
+  verificationExpires DateTime? // Fecha de expiración del código de verificación
+  isVerified       Boolean  @default(false) // Si el usuario ha verificado su correo
 }
 
 model TrackedItem {
