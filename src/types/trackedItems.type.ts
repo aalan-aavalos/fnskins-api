@@ -2,7 +2,6 @@ export interface TrackedItemWithUser {
   id: string;
   userId: string;
   skinId: string;
-  skinName: string;
   addedAt: Date;
   user: {
     id: string;

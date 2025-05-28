@@ -1,8 +1,43 @@
 import { Request, Response } from "express";
 import { TrackedItemService } from "../services/TrackedItemService";
+import { AppError } from "../errors/appErrors";
 
 class TrackedItemController {
   private trackedItemService = new TrackedItemService();
+
+  private handleError(res: Response, error: any) {
+    console.error("Auth Error:", error); // Log detallado para desarrollo
+
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({
+        status: error.errorCode,
+        message: error.message,
+        data: null,
+        errors: error.details || null,
+      });
+    }
+
+    // Error de validación de Zod (cuando no se captura como AppError)
+    if (error.errors && Array.isArray(error.errors)) {
+      return res.status(400).json({
+        status: 2,
+        message: "Error de validación",
+        data: null,
+        errors: error.errors,
+      });
+    }
+
+    // Error no controlado
+    res.status(500).json({
+      status: 1,
+      message: "Error interno del servidor",
+      data: null,
+      errors:
+        process.env.NODE_ENV === "development"
+          ? { message: error.message }
+          : null,
+    });
+  }
 
   public create = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -10,18 +45,28 @@ class TrackedItemController {
         req.body
       );
 
-      res.status(201).json(trackedItem);
+      res.status(200).json({
+        status: 0,
+        message: "Skin registrada exitosamente",
+        data: trackedItem,
+        errors: null,
+      });
     } catch (error) {
-      res.status(500).json({ error: "Error creating trackedItem" });
+      this.handleError(res, error);
     }
   };
 
   public findAll = async (_req: Request, res: Response): Promise<void> => {
     try {
       const trackedItems = await this.trackedItemService.getAllTrackedItem();
-      res.json(trackedItems);
+      res.status(200).json({
+        status: 0,
+        message: "Listado de skins trackeadas exitosamente",
+        data: trackedItems,
+        errors: null,
+      });
     } catch (error) {
-      res.status(500).json({ error: "Error fetching trackedItems" });
+      this.handleError(res, error);
     }
   };
 
@@ -30,13 +75,14 @@ class TrackedItemController {
       const trackedItem = await this.trackedItemService.getTrackedItemById(
         req.params.id
       );
-      if (!trackedItem) {
-        res.status(404).json({ error: "TrackedItem not found" });
-        return;
-      }
-      res.json(trackedItem);
+      res.status(200).json({
+        status: 0,
+        message: "Skins trackeada listada exitosamente",
+        data: trackedItem,
+        errors: null,
+      });
     } catch (error) {
-      res.status(500).json({ error: "Error fetching trackedItem" });
+      this.handleError(res, error);
     }
   };
 
@@ -47,13 +93,15 @@ class TrackedItemController {
     try {
       const trackedItemsByUserId =
         await this.trackedItemService.getTrackedItemByUserId(req.params.userId);
-      if (!trackedItemsByUserId) {
-        res.status(404).json({ error: "TrackedItem by userId not found" });
-        return;
-      }
-      res.json(trackedItemsByUserId);
+
+      res.status(200).json({
+        status: 0,
+        message: "Skins trackeada por id de usuario listado exitosamente",
+        data: trackedItemsByUserId,
+        errors: null,
+      });
     } catch (error) {
-      res.status(500).json({ error: "Error fetching trackedItem by userId" });
+      this.handleError(res, error);
     }
   };
 
@@ -64,13 +112,14 @@ class TrackedItemController {
           req.params.id,
           req.body
         );
-      if (!updatedTrackedItem) {
-        res.status(404).json({ error: "TrackedItem not found" });
-        return;
-      }
-      res.json(updatedTrackedItem);
+      res.status(200).json({
+        status: 0,
+        message: "Skins trackeada actualizada exitosamente",
+        data: updatedTrackedItem,
+        errors: null,
+      });
     } catch (error) {
-      res.status(500).json({ error: "Error updating trackedItem" });
+      this.handleError(res, error);
     }
   };
 
@@ -79,13 +128,14 @@ class TrackedItemController {
       const deleted = await this.trackedItemService.deleteTrackedItem(
         req.params.id
       );
-      if (!deleted) {
-        res.status(404).json({ error: "TrackedItem not found" });
-        return;
-      }
-      res.status(204).send();
+      res.status(200).json({
+        status: 0,
+        message: "Skins trackeada eliminada exitosamente",
+        data: { deleted },
+        errors: null,
+      });
     } catch (error) {
-      res.status(500).json({ error: "Error deleting trackedItem" });
+      this.handleError(res, error);
     }
   };
 }

@@ -1,9 +1,12 @@
 import express from "express";
 import { UserController } from "../controllers/user.controller";
+import { ValidateZod } from "../middlewares/validateZod";
+import { createSchema, updateSchema } from "../validators/usersSchemas";
 
 class UserRoutes {
   private router: express.Router;
   private controller = new UserController();
+  private validateZod = new ValidateZod().validateZod;
 
   constructor() {
     this.router = express.Router();
@@ -11,10 +14,18 @@ class UserRoutes {
   }
 
   private routes() {
-    this.router.post("/", this.controller.create);
+    this.router.post(
+      "/",
+      this.validateZod(createSchema),
+      this.controller.create
+    );
     this.router.get("/", this.controller.findAll);
     this.router.get("/:id", this.controller.findOne);
-    this.router.put("/:id", this.controller.update);
+    this.router.put(
+      "/:id",
+      this.validateZod(updateSchema),
+      this.controller.update
+    );
     this.router.delete("/:id", this.controller.delete);
   }
 

@@ -9,6 +9,7 @@ class SkinCron {
   private static trackedItemService = new TrackedItemService();
   public static start(): void {
     // '0 18 * * *'
+    // '*/2 * * * *'
     cron.schedule(
       "0 18 * * *",  
       async () => {

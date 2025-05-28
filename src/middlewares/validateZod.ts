@@ -1,7 +1,6 @@
 // middlewares/validateZod.ts
 import { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
-import { ValidationError } from "../errors/appErrors";
 
 export class ValidateZod {
   public validateZod(schema: ZodSchema) {

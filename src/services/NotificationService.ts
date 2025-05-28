@@ -15,9 +15,9 @@ export class NotificationService {
 
       return {
         to: item.user.email,
-        subject: `¡Tu skin ${item.skinName} está en la tienda!`,
+        subject: `¡Tu skin ${skinData.brItems![0].name} está en la tienda!`,
         html: skinAvailableTemplate(skinData, item),
-        text: `${item.skinName} está en la tienda de Fortnite. `,
+        text: `${skinData.brItems![0].name} está en la tienda de Fortnite. `,
       };
     });
   }

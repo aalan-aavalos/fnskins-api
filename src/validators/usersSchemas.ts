@@ -13,15 +13,8 @@ const passwordValidation = z
     "La contraseña no puede contener espacios"
   );
 
-export const loginSchema = z
+export const createSchema = z
   .object({
-    email: z.string().email("Email inválido"),
-    password: passwordValidation,
-  })
-  .strict("Campos ingresados invalidos");
-
-export const registerSchema = loginSchema
-  .extend({
     email: z.string().email("Email inválido"),
     name: z
       .string()
@@ -35,18 +28,21 @@ export const registerSchema = loginSchema
   })
   .strict("Campos ingresados invalidos");
 
-export const sendCodeSchema = z
-  .object({
-    email: z.string().email("Email inválido"),
-  })
-  .strict("Campos ingresados invalidos");
-
-export const verifyEmailSchema = z
-  .object({
-    email: z.string().email("Email inválido"),
-    code: z
-      .string()
-      .length(6, "El código debe tener 6 caracteres")
-      .regex(/^\d+$/, "El código debe contener solo números"),
-  })
-  .strict("Campos ingresados invalidos");
+export const updateSchema = z.object({
+  email: z.string().email("Email inválido"),
+  name: z
+    .string()
+    .min(1, "El nombre es requerido")
+    .max(50, "El nombre no puede exceder los 50 caracteres")
+    .regex(
+      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+      "El nombre solo puede contener letras y espacios"
+    ),
+  password: passwordValidation,
+  isDonor: z.boolean().optional(),
+  isVerified: z.boolean().optional(),
+  pushToken: z.string().optional(),
+  donations: z.number().optional(),
+  verificationCode: z.string().optional(),
+  verificationExpires: z.date().optional(),
+});

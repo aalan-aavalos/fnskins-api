@@ -52,11 +52,7 @@ class AuthController {
         status: 0,
         message: "Inicio de sesión exitoso",
         data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-          },
+          user: user,
           token: "generar-token-jwt-aqui", // Agrega tu lógica de JWT
         },
         errors: null,
@@ -79,11 +75,7 @@ class AuthController {
         status: 0,
         message:
           "Usuario registrado exitosamente. Se ha enviado un código de verificación.",
-        data: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        },
+        data: user,
         errors: null,
       });
     } catch (error) {

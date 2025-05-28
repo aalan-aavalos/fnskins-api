@@ -34,6 +34,6 @@ model TrackedItem {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   skinId    String   // ID de la skin en la tienda de Fortnite
-  skinName  String
+  obtained  Boolean  @default(false)  // 👈 Este es el nuevo campo
   addedAt   DateTime @default(now())
 }
