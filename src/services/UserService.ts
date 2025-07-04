@@ -1,37 +1,20 @@
 import { PrismaClient, User } from "@prisma/client";
-import { ConflictError, NotFoundError } from "../errors/appErrors";
+import { NotFoundError, ValidationError } from "../errors/appErrors";
+import { NodemailerSender } from "../utils/NodemailerSender";
+import { deleteAccountConfirmationTemplate } from "../templates/deleteAccountConfirmationTemplate";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 class UserService {
-  public async createUser(data: User): Promise<User> {
-    const { email, password } = data;
-
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) throw new ConflictError("El email ya está registrado");
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: { ...data, password: hashedPassword },
-    });
-
-    return user;
-  }
-
-  public async getAllUsers(): Promise<User[]> {
-    return await prisma.user.findMany();
-  }
-
-  public async getUserById(id: string): Promise<User | null> {
+  public async getUserProfile(id: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundError("Datos de usuario");
 
-    if (!user) throw new NotFoundError("El usuario no a sido encontrado");
-    
     return user;
   }
 
-  public async updateUser(
+  public async updateUserProfile(
     id: string,
     data: Partial<User>
   ): Promise<User | null> {
@@ -39,32 +22,52 @@ class UserService {
 
     if (!user) throw new NotFoundError("El usuario no a sido encontrado");
 
-    if (data.email && data.email !== user.email) {
-      const emailExists = await prisma.user.findFirst({
-        where: {
-          email: data.email,
-          id: { not: id },
-        },
-      });
-      if (emailExists) throw new ConflictError("Email ya está en uso");
-    }
-
     if (data.password) data.password = await bcrypt.hash(data.password, 10);
+
+    const { name, password } = data;
 
     const userUpdated = await prisma.user.update({
       where: { id },
-      data,
+      data: { name, password },
     });
-
-    return userUpdated;
+    return null;
   }
 
-  public async deleteUser(id: string): Promise<boolean> {
-    const user = await prisma.user.findUnique({ where: { id } });
+  public async sendDeleteCode(email: string): Promise<void> {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new NotFoundError("Usuario");
 
-    if (!user) throw new NotFoundError("El usuario no a sido encontrado");
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
 
-    const deleted = await prisma.user.delete({ where: { id } });
+    await prisma.user.update({
+      where: { email },
+      data: {
+        verificationCode: code,
+        verificationExpires: expires,
+      },
+    });
+
+    await NodemailerSender.sendMail(
+      email,
+      "Verifica tu cuenta",
+      deleteAccountConfirmationTemplate(user.name!, code),
+      `Hola ${user.name}, tu código de verificación es: ${code}`
+    );
+  }
+
+  public async verifyDeleteCode(email: string, code: string): Promise<Boolean> {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || user.verificationCode !== code) {
+      throw new ValidationError("Código de verificación incorrecto");
+    }
+    if (user.verificationExpires && user.verificationExpires < new Date()) {
+      throw new ValidationError("Código de verificación expirado");
+    }
+
+    const deleted = await prisma.user.delete({ where: { id: user.id } });
+
     return Boolean(deleted);
   }
 }

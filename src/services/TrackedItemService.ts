@@ -15,7 +15,19 @@ class TrackedItemService {
     });
     if (skinExist) throw new ConflictError("La skin ya esta registrada");
 
-    const trackedItem = await prisma.trackedItem.create({ data });
+    const currentUntrackedCount = await prisma.trackedItem.count({
+      where: { userId, obtained: false },
+    });
+
+    if (currentUntrackedCount >= user.skinsLimit) {
+      throw new ConflictError(
+        "El usuario ha alcanzado el limite de skins no obtenidas"
+      );
+    }
+
+    const trackedItem = await prisma.trackedItem.create({
+      data: { ...data, obtained: false },
+    });
     return trackedItem;
   }
 
@@ -49,7 +61,7 @@ class TrackedItemService {
     id: string,
     data: Partial<TrackedItem>
   ): Promise<TrackedItem | null> {
-    const { skinId, userId } = data;
+    const { skinId, userId, obtained } = data;
 
     const exist = await prisma.trackedItem.findUnique({ where: { id } });
     if (!exist) throw new NotFoundError("Tracked Item");
@@ -62,9 +74,19 @@ class TrackedItemService {
     });
     if (skinExist) throw new ConflictError("La skin ya esta registrada");
 
+    const currentUntrackedCount = await prisma.trackedItem.count({
+      where: { userId, obtained: false, id: { not: id } },
+    });
+
+    if (currentUntrackedCount >= user.skinsLimit) {
+      throw new ConflictError(
+        "El usuario ha alcanzado el limite de skins no obtenidas"
+      );
+    }
+
     const trackedItem = await prisma.trackedItem.update({
       where: { id },
-      data,
+      data: { obtained },
     });
     return trackedItem;
   }

@@ -18,7 +18,6 @@ export const createSchema = z
     email: z.string().email("Email inválido"),
     name: z
       .string()
-      .min(1, "El nombre es requerido")
       .max(50, "El nombre no puede exceder los 50 caracteres")
       .regex(
         /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
@@ -29,16 +28,16 @@ export const createSchema = z
   .strict("Campos ingresados invalidos");
 
 export const updateSchema = z.object({
-  email: z.string().email("Email inválido"),
+  email: z.string().email("Email inválido").optional(),
   name: z
     .string()
-    .min(1, "El nombre es requerido")
     .max(50, "El nombre no puede exceder los 50 caracteres")
     .regex(
       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
       "El nombre solo puede contener letras y espacios"
-    ),
-  password: passwordValidation,
+    )
+    .optional(),
+  password: passwordValidation.optional(),
   isDonor: z.boolean().optional(),
   isVerified: z.boolean().optional(),
   pushToken: z.string().optional(),

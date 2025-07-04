@@ -14,6 +14,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  user
+  admin
+}
+
 model User {
   id           String         @id @default(uuid())
   email        String         @unique
@@ -23,6 +28,8 @@ model User {
   pushToken    String?        // Para notificaciones push (en el futuro)
   donations    Float?         // Cuánto ha donado el usuario
   isDonor      Boolean        @default(false)
+  skinsLimit   Int            @default(1)
+  role         Role           @default(user)
   trackedItems TrackedItem[]
   verificationCode String?  // Código de verificación enviado por correo
   verificationExpires DateTime? // Fecha de expiración del código de verificación
@@ -36,4 +43,6 @@ model TrackedItem {
   skinId    String   // ID de la skin en la tienda de Fortnite
   obtained  Boolean  @default(false)  // 👈 Este es el nuevo campo
   addedAt   DateTime @default(now())
+
+  @@unique([userId, skinId]) // evita duplicados por usuario + skin
 }
