@@ -1,11 +1,11 @@
 import express from "express";
-import { UserController } from "../controllers/users.controller";
+import { UsersController } from "../controllers/users.controller";
 import { ValidateZod } from "../middlewares/validateZod";
 import { createSchema, updateSchema } from "../validators/usersSchemas";
 
 class UserRoutes {
   private router: express.Router;
-  private controller = new UserController();
+  private controller = new UsersController();
   private validateZod = new ValidateZod().validateZod;
 
   constructor() {

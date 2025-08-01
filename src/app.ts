@@ -3,9 +3,11 @@ import cors from "cors";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 
-import userRoutes from "./routes/users.routes";
+import usersRoutes from "./routes/users.routes";
 import trackedItemRoutes from "./routes/tracked.routes";
 import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
+
 
 import { adminOnly, authMiddleware } from "./middlewares/auth.middleware";
 
@@ -45,14 +47,12 @@ class App {
     });
     this.app.use("/api/auth", authRoutes);
     this.app.use(authMiddleware);
-    this.app.use("/api/user", (req, res) => {
-      res.json({ message: "Ruta de usuario" });
-    });
+    this.app.use("/api/user", userRoutes);
     this.app.use("/api/skins", (req, res) => {
-      res.json({ message: "Ruta de skins" });
+      res.json({ message: "Ruta de skins para usuarios" });
     });
     this.app.use(adminOnly);
-    this.app.use("/api/users", userRoutes);
+    this.app.use("/api/users", usersRoutes);
     this.app.use("/api/tracked-items", trackedItemRoutes);
   }
 

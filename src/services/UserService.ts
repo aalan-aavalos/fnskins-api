@@ -30,7 +30,7 @@ class UserService {
       where: { id },
       data: { name, password },
     });
-    return null;
+    return userUpdated;
   }
 
   public async sendDeleteCode(email: string): Promise<void> {

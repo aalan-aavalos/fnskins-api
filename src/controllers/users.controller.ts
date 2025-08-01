@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { UserService } from "../services/UsersService";
+import { UsersService } from "../services/UsersService";
 import { AppError } from "../errors/appErrors";
 
-class UserController {
-  private userService = new UserService();
+class UsersController {
+  private usersService = new UsersService();
 
   private handleError(res: Response, error: any) {
     console.error("Auth Error:", error); // Log detallado para desarrollo
@@ -41,7 +41,7 @@ class UserController {
 
   public create = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user = await this.userService.createUser(req.body);
+      const user = await this.usersService.createUser(req.body);
 
       res.status(200).json({
         status: 0,
@@ -56,7 +56,7 @@ class UserController {
 
   public findAll = async (_req: Request, res: Response): Promise<void> => {
     try {
-      const users = await this.userService.getAllUsers();
+      const users = await this.usersService.getAllUsers();
       res.status(200).json({
         status: 0,
         message: "Usuarios listados exitosamente",
@@ -70,7 +70,7 @@ class UserController {
 
   public findOne = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user = await this.userService.getUserById(req.params.id);
+      const user = await this.usersService.getUserById(req.params.id);
 
       res.status(200).json({
         status: 0,
@@ -85,7 +85,7 @@ class UserController {
 
   public update = async (req: Request, res: Response): Promise<void> => {
     try {
-      const updatedUser = await this.userService.updateUser(
+      const updatedUser = await this.usersService.updateUser(
         req.params.id,
         req.body
       );
@@ -103,7 +103,7 @@ class UserController {
 
   public delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      const deleted = await this.userService.deleteUser(req.params.id);
+      const deleted = await this.usersService.deleteUser(req.params.id);
 
       res.status(200).json({
         status: 0,
@@ -117,4 +117,4 @@ class UserController {
   };
 }
 
-export { UserController };
+export { UsersController };

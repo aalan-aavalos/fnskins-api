@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-class UserService {
+class UsersService {
   public async createUser(data: User): Promise<User> {
     const { email, password } = data;
 
@@ -79,4 +79,4 @@ class UserService {
   }
 }
 
-export { UserService };
+export { UsersService };
