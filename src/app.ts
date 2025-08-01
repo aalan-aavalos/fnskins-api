@@ -8,7 +8,6 @@ import trackedItemRoutes from "./routes/tracked.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 
-
 import { adminOnly, authMiddleware } from "./middlewares/auth.middleware";
 
 class App {
@@ -42,6 +41,10 @@ class App {
   }
 
   private routes() {
+    this.app.get("/", (req, res) => {
+      res.json({ message: "Bienvenido a la API de FN Skins" });
+    });
+    
     this.app.get("/favicon.ico", (req, res) => {
       res.end();
     });
