@@ -50,7 +50,7 @@ class UserService {
 
     await NodemailerSender.sendMail(
       email,
-      "Verifica tu cuenta",
+      "Verifica eliminacion de tu cuenta",
       deleteAccountConfirmationTemplate(user.name!, code),
       `Hola ${user.name}, tu código de verificación es: ${code}`
     );
