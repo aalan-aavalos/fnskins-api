@@ -100,6 +100,45 @@ class UserController {
       this.handleError(res, error);
     }
   };
+
+  public sendDeleteCode = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const { email } = req.body;
+      await this.userService.sendDeleteCode(email);
+
+      res.status(200).json({
+        status: 0,
+        message: "Código de verificación de eliminacion enviado al correo",
+        data: null,
+        errors: null,
+      });
+    } catch (error) {
+      this.handleError(res, error);
+    }
+  };
+
+  public verifyDeleteCode = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const { email, code } = req.body;
+
+      const deleted = await this.userService.verifyDeleteCode(email, code);
+
+      res.status(200).json({
+        status: 0,
+        message: "Eliminacion de cuenta exitosamentwe",
+        data: { deleted },
+        errors: null,
+      });
+    } catch (error) {
+      this.handleError(res, error);
+    }
+  };
 }
 
 export { UserController };

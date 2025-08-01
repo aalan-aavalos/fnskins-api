@@ -1,7 +1,11 @@
 import express from "express";
 import { UserController } from "../controllers/user.controller";
 import { ValidateZod } from "../middlewares/validateZod";
-import { updateUserValidation } from "../validators/userSchema";
+import {
+  updateUserValidation,
+  sendCodeSchema,
+  verifyEmailSchema,
+} from "../validators/userSchema";
 
 class UserRoutes {
   private router: express.Router;
@@ -20,13 +24,16 @@ class UserRoutes {
       this.validateZod(updateUserValidation),
       this.controller.updateUserProfile
     );
-    // this.router.get("/:id", this.controller.findOne);
-    // this.router.put(
-    //   "/:id",
-    //   this.validateZod(updateUserValidation),
-    //   this.controller.update
-    // );
-    // this.router.delete("/:id", this.controller.delete);
+    this.router.post(
+      "/delete-request",
+      this.validateZod(sendCodeSchema),
+      this.controller.sendDeleteCode
+    );
+    this.router.post(
+      "/delete-confirm",
+      this.validateZod(verifyEmailSchema),
+      this.controller.verifyDeleteCode
+    );
   }
 
   public getRouter(): express.Router {
