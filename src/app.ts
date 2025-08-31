@@ -7,6 +7,7 @@ import usersRoutes from "./routes/users.routes";
 import trackedItemRoutes from "./routes/tracked.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import skinsRoutes from "./routes/skins.routes";
 
 import { adminOnly, authMiddleware } from "./middlewares/auth.middleware";
 
@@ -51,9 +52,7 @@ class App {
     this.app.use("/api/auth", authRoutes);
     this.app.use(authMiddleware);
     this.app.use("/api/user", userRoutes);
-    this.app.use("/api/skins", (req, res) => {
-      res.json({ message: "Ruta de skins para usuarios" });
-    });
+    this.app.use("/api/skins", skinsRoutes);
     this.app.use(adminOnly);
     this.app.use("/api/users", usersRoutes);
     this.app.use("/api/tracked-items", trackedItemRoutes);
